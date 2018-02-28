@@ -27,15 +27,14 @@ class Campaign:
       response_json['data'] = json_dict['result']['error']
 
     else:
-      response_json['msg_type'] = 'success'
-      response_json['msg'] = ''
-
       if obj_type == 'campaigns':
-
         response_json['data'] = json_dict['result']['entities']['entity']
 
       if obj_type == 'campaign':
         response_json['data'] = json_dict['result']['entity']['prop']
+
+      response_json['msg_type'] = 'success'
+      response_json['msg'] = ''
 
     return response_json
 
