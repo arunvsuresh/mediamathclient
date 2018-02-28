@@ -17,5 +17,23 @@ class TestMediaMathCampaign(TestCase):
 
   def test_get_campaign_by_id(self):
     c = campaign.Campaign()
-    c = c.get_campaign_by_id(325578)
+    c = c.get_campaign_by_id(482846)
     self.assertIn('"msg_type": "success"', c)
+
+  def test_create_campaign(self):
+    c = campaign.Campaign()
+
+    data = {
+      'ad_server_id': '9',
+      'advertiser_id': 100429,
+      'end_date': '2018-03-10',
+      'goal_type': 'spend',
+      'goal_value': '0.0001',
+      'name': 'arun test campaign!!!',
+      'service_type': 'SELF',
+      'start_date': '2018-03-01',
+      'total_budget': 2
+    }
+
+    new_campaign = c.create_campaign(data)
+    self.assertIn('"msg_type": "success"', new_campaign)

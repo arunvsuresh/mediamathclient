@@ -71,3 +71,19 @@ class Campaign:
     request_body = url, headers
     response_json = self.generate_json_response("campaign", json_dict, response, request_body)
     return json.dumps(response_json)
+
+  def create_campaign(self, payload):
+    t1 = self.get_connection()
+    url = t1._construct_url("campaigns", entity=None, child=None, limit=None)[0]
+    url = "https://" + t1.api_base + "/" + t1._get_service_path('campaigns') + "/" + url
+    response = t1.session.post(url, payload)
+    headers = dict(response.headers)
+    # get response content, comes back as xml
+    xml_string = response.content
+    # convert xml to json string and remove unwanted "@" symbol
+    json_string = json.dumps(xmltodict.parse(xml_string), indent=4).replace(chr(64), '')
+    # convert json string back to json dict to create proper json response
+    json_dict = json.loads(json_string)
+    request_body = url, headers
+    response_json = self.generate_json_response("campaign", json_dict, response, request_body)
+    return json.dumps(response_json)
