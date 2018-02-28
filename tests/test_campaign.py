@@ -6,8 +6,8 @@ import json
 class TestMediaMathCampaign(TestCase):
 
   def test_connection(self):
-    c = campaign.Campaign()
-    session_id = c.get_connection()
+    c = campaign.get_connection()
+    session_id = c.session_id
     self.assertIsNotNone(session_id)
 
   def test_get_campaigns_by_advertiser(self):
@@ -25,7 +25,7 @@ class TestMediaMathCampaign(TestCase):
 
     data = {
       'ad_server_id': '9',
-      'advertiser_id': 100429,
+      'advertiser_id': 162259,
       'end_date': '2018-03-10',
       'goal_type': 'spend',
       'goal_value': '0.0001',
