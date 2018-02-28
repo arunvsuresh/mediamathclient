@@ -15,3 +15,7 @@ class TestMediaMathCampaign(TestCase):
     campaigns = c.get_campaigns_by_advertiser(100429)
     self.assertIn('"msg_type": "success"', campaigns)
 
+  def test_get_campaign_by_id(self):
+    c = campaign.Campaign()
+    c = c.get_campaign_by_id(325578)
+    self.assertIn('"msg_type": "success"', c)
