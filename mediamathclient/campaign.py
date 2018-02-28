@@ -14,10 +14,13 @@ class Campaign:
     }
     return terminalone.T1(auth_method="cookie", **creds)
 
-  def get_campaigns(self):
-    response_json = {}
+  def get_campaigns_by_advertiser(self, advertiser_id):
     t1 = self.get_connection()
-    url = "https://" + t1.api_base + "/" + t1._get_service_path('campaigns') + "/campaigns"
+
+    filtered_url = t1._construct_url("campaigns", entity=None, child=None, limit={"advertiser": int(advertiser_id)})[0]
+
+    url = "https://" + t1.api_base + "/" + t1._get_service_path('campaigns') + "/" + filtered_url
+
     response = t1.session.get(url)
     # convert headers to real dict since it comes back as CaseInsensitiveDict
     headers = dict(response.headers)
@@ -27,6 +30,9 @@ class Campaign:
     json_string = json.dumps(xmltodict.parse(xml_string), indent=4).replace(chr(64), '')
     # convert json string back to json dict to create proper json response
     json_dict = json.loads(json_string)
+
+    response_json = {}
+
     # error checking
     if 'errors' in json_dict['result']:
       response_json['msg_type'] = 'error'
@@ -43,3 +49,5 @@ class Campaign:
       response_json['request_body'] = url, headers
 
     return json.dumps(response_json)
+
+  # def get_campaign_by_id

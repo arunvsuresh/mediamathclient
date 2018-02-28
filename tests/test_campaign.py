@@ -10,8 +10,8 @@ class TestMediaMathCampaign(TestCase):
     session_id = c.get_connection()
     self.assertIsNotNone(session_id)
 
-  def test_get_campaigns(self):
+  def test_get_campaigns_by_advertiser(self):
     c = campaign.Campaign()
-    campaigns = c.get_campaigns()
+    campaigns = c.get_campaigns_by_advertiser(100429)
     self.assertIn('"msg_type": "success"', campaigns)
 
