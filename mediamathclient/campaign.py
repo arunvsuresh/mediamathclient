@@ -42,6 +42,7 @@ class Campaign:
     return response_json
 
   def get_campaign_by_id(self, campaign_id):
+
     url = self.t1._construct_url("campaigns", entity=campaign_id, child=None, limit=None)[0]
     url = "https://" + self.t1.api_base + "/" + self.t1._get_service_path('campaigns') + "/" + url
     headers = {'Content-Type': 'application/json', 'Accept': 'application/vnd.mediamath.v1+json', 'Cookie': 'adama_session=' + str(self.t1.session_id)}
@@ -62,11 +63,15 @@ class Campaign:
     return json.dumps(response_json)
 
   def create_campaign(self, payload):
+    base_url = "https://" + self.t1.api_base
+    service_url = self.t1._get_service_path('campaigns')
     url = self.t1._construct_url("campaigns", entity=None, child=None, limit=None)[0]
-    url = "https://" + self.t1.api_base + "/" + self.t1._get_service_path('campaigns') + "/" + url
-    headers = {'Content-Type': 'application/json', 'Accept': 'application/vnd.mediamath.v1+json', 'Cookie': 'adama_session=' + str(self.t1.session_id)}
+    url = base_url + "/" + service_url + "/" + url
+    headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.mediamath.v1+json', 'Cookie': 'adama_session=' + str(self.t1.session_id)}
     response = requests.post(url, headers=headers, data=payload)
     json_dict = response.json()
     request_body = url, headers
     response_json = self.generate_json_response("campaigns", json_dict, response, request_body)
     return json.dumps(response_json)
+
+
