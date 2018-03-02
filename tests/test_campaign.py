@@ -31,7 +31,7 @@ class TestMediaMathCampaign(TestCase):
       'end_date': '2018-03-10T09:00:00+0000',
       'goal_type': 'spend',
       'goal_value': '0.0001',
-      'name': 'arun test campaign 03/01/2018',
+      'name': 'arun test campaign 03/04/2018',
       'service_type': 'SELF',
       'start_date': '2018-03-02T23:59:00+0000',
       'total_budget': 2
@@ -49,7 +49,7 @@ class TestMediaMathCampaign(TestCase):
       'end_date': '2018-03-10T09:00:00+0000',
       'goal_type': 'spend',
       'goal_value': '0.0001',
-      'name': 'arun test campaign 03/01/2018',
+      'name': 'arun test campaign 03/02/2018',
       'service_type': 'SELF',
       'start_date': '2018-03-02T23:59:00+0000',
       'total_budget': 2

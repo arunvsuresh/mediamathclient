@@ -2,9 +2,8 @@ import json
 import requests
 import os
 import terminalone
-import xmltodict
 
-
+# connect to t1
 def get_connection():
   creds = {
     "username": os.environ['MM_USERNAME'],
@@ -16,6 +15,13 @@ def get_connection():
 class Campaign:
 
   t1 = get_connection()
+  base_url = "https://" + t1.api_base + "/"
+  service_url = t1._get_service_path('campaigns') + "/"
+  constructed_url = t1._construct_url("campaigns", entity=None, child=None, limit=None)[0]
+  url = base_url + service_url + constructed_url
+  headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.mediamath.v1+json',
+             'Cookie': 'adama_session=' + str(t1.session_id)}
+
 
   def generate_json_response(self, obj_type, json_dict, response, request_body):
     response_json = {
@@ -42,35 +48,26 @@ class Campaign:
     return response_json
 
   def get_campaign_by_id(self, campaign_id):
-
-    url = self.t1._construct_url("campaigns", entity=campaign_id, child=None, limit=None)[0]
-    url = "https://" + self.t1.api_base + "/" + self.t1._get_service_path('campaigns') + "/" + url
-    headers = {'Content-Type': 'application/json', 'Accept': 'application/vnd.mediamath.v1+json', 'Cookie': 'adama_session=' + str(self.t1.session_id)}
-    response = requests.get(url, headers=headers)
+    url = self.url + "/" + str(campaign_id)
+    response = requests.get(url, headers=self.headers)
     json_dict = response.json()
-    request_body = url, headers
+    request_body = url, self.headers
     response_json = self.generate_json_response("campaign", json_dict, response, request_body)
     return json.dumps(response_json)
 
   def get_campaigns_by_advertiser(self, advertiser_id):
-    url = self.t1._construct_url("campaigns", entity=None, child=None, limit={"advertiser": int(advertiser_id)})[0]
-    url = "https://" + self.t1.api_base + "/" + self.t1._get_service_path('campaigns') + "/" + url
-    headers = {'Content-Type': 'application/json', 'Accept': 'application/vnd.mediamath.v1+json', 'Cookie': 'adama_session=' + str(self.t1.session_id)}
-    response = requests.get(url, headers=headers)
+    url = self.url + "/limit/advertiser={0}".format(advertiser_id)
+    response = requests.get(url, headers=self.headers)
     json_dict = response.json()
-    request_body = url, headers
+    request_body = url, self.headers
     response_json = self.generate_json_response("campaigns", json_dict, response, request_body)
     return json.dumps(response_json)
 
   def create_campaign(self, payload):
-    base_url = "https://" + self.t1.api_base
-    service_url = self.t1._get_service_path('campaigns')
-    url = self.t1._construct_url("campaigns", entity=None, child=None, limit=None)[0]
-    url = base_url + "/" + service_url + "/" + url
-    headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.mediamath.v1+json', 'Cookie': 'adama_session=' + str(self.t1.session_id)}
-    response = requests.post(url, headers=headers, data=payload)
+    url = self.url
+    response = requests.post(url, headers=self.headers, data=payload)
     json_dict = response.json()
-    request_body = url, headers
+    request_body = url, self.headers
     response_json = self.generate_json_response("campaigns", json_dict, response, request_body)
     return json.dumps(response_json)
 
