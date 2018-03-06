@@ -28,7 +28,7 @@ class TestMediaMathLineItem(TestCase):
     data = {
       'campaign_id': 243821,
       'name': 'arun test line item 03/02/2018',
-      'start_date': '2018-03-02T23:59:00+0000',
+      'start_date': '2018-03-07T23:59:00+0000',
       'end_date': '2018-03-10T09:00:00+0000',
       'budget': 2,
       'pacing_amount': 0.01,
