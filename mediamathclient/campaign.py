@@ -42,12 +42,7 @@ class Campaign:
       response_json['data'] = json_dict['errors']
 
     else:
-      if obj_type == 'campaigns':
-        response_json['data'] = json_dict['data']
-
-      if obj_type == 'campaign':
-        response_json['data'] = json_dict['data']
-
+      response_json['data'] = json_dict['data']
       response_json['msg_type'] = 'success'
       response_json['msg'] = ''
 
