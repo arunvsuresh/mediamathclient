@@ -3,7 +3,7 @@ import requests
 import os
 import terminalone
 import xmltodict
-
+import datetime
 
 def get_connection():
   creds = {
@@ -69,4 +69,19 @@ class LineItem:
     response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
 
+  # updates existing line items
+  def save(self, payload, lineitem_id):
+    line_item = self.t1.get('strategies', lineitem_id, include="campaign")
+    if 'start_date' and 'end_date' in payload:
+      payload['start_date'] = self.normalize_date_time(payload['start_date'])
+      payload['end_date'] = self.normalize_date_time(payload['end_date'])
+    line_item.save(data=payload)
+    return line_item
 
+  def normalize_date_time(self, date, date_format='%Y-%m-%dT%H:%M:%S'):
+    """
+      convert datetime str to datetime obj, since MM handles datetime obj --> str conversion on their end
+      only needed for update(), not for create
+    """
+    date = datetime.datetime.strptime(date, date_format)
+    return date
