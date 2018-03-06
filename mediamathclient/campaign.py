@@ -2,6 +2,12 @@ import json
 import requests
 import os
 import terminalone
+import datetime
+
+
+class DateException(Exception):
+  pass
+
 
 # connect to t1
 def get_connection():
@@ -70,5 +76,22 @@ class Campaign:
     request_body = url, self.headers
     response_json = self.generate_json_response("campaigns", json_dict, response, request_body)
     return json.dumps(response_json)
+
+  # updates existing campaigns
+  def save(self, payload, campaign_id):
+    campaign = self.t1.get('campaigns', campaign_id, include="advertiser")
+    if 'start_date' and 'end_date' in payload:
+      payload['start_date'] = self.normalize_date_time(payload['start_date'])
+      payload['end_date'] = self.normalize_date_time(payload['end_date'])
+    campaign.save(data=payload)
+    return campaign
+
+  def normalize_date_time(self, date, date_format='%Y-%m-%dT%H:%M:%S'):
+    """
+      convert datetime str to datetime obj, since MM handles datetime obj --> str conversion on their end
+      only needed for update(), not for create
+    """
+    date = datetime.datetime.strptime(date, date_format)
+    return date
 
 

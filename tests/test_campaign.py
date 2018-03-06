@@ -28,12 +28,12 @@ class TestMediaMathCampaign(TestCase):
     data = {
       'advertiser_id': 162259,
       'ad_server_id': 9,
-      'end_date': '2018-03-10T09:00:00+0000',
+      'end_date': '2018-03-10T09:00:00',
       'goal_type': 'spend',
       'goal_value': '0.0001',
-      'name': 'arun test campaign 03/04/2018',
+      'name': 'arun test campaign 03/06',
       'service_type': 'SELF',
-      'start_date': '2018-03-02T23:59:00+0000',
+      'start_date': '2018-03-07T23:59:00',
       'total_budget': 2
     }
     new_campaign = c.create_campaign(data)
@@ -57,3 +57,33 @@ class TestMediaMathCampaign(TestCase):
     new_campaign = c.create_campaign(data)
     new_campaign = json.loads(new_campaign)
     self.assertIn(new_campaign['msg_type'], 'error')
+
+  def test_update_campaign(self):
+    # initialize campaign instance
+    c = campaign.Campaign()
+
+    # get campaign by id
+    old_campaign = c.get_campaign_by_id(485277)
+
+    # convert json str to json dict
+    old_campaign = json.loads(old_campaign)
+    # get campaign id to pass into save()
+    campaign_id = old_campaign['data']['id']
+
+    data = {
+      'advertiser_id': 162259,
+      'ad_server_id': 9,
+      'end_date': '2018-03-12T09:00:00',
+      'goal_type': 'spend',
+      'goal_value': '0.0001',
+      'name': 'this is arun suresh\'s test campaign on 03/06/2018',
+      'service_type': 'SELF',
+      'start_date': '2018-03-10T23:59:00',
+      'total_budget': 2,
+    }
+
+    c.save(data, campaign_id)
+    updated_campaign = c.get_campaign_by_id(485277)
+    updated_campaign = json.loads(updated_campaign)
+    self.assertIn(updated_campaign['data']['name'], 'this is arun suresh\'s test campaign on 03/06/2018')
+
