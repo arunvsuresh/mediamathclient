@@ -28,6 +28,12 @@ class Campaign:
   headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.mediamath.v1+json',
              'Cookie': 'adama_session=' + str(t1.session_id)}
 
+  def __init__(self, data=None, omg_campaign=None):
+    # super(Campaign, self).__init__()
+
+    self.data = data
+    self.omg_campaign = omg_campaign
+
 
   def generate_json_response(self, json_dict, response, request_body):
     response_json = {
@@ -54,7 +60,8 @@ class Campaign:
     json_dict = response.json()
     request_body = url, self.headers
     response_json = self.generate_json_response(json_dict, response, request_body)
-    return json.dumps(response_json)
+    self.data = json.dumps(response_json)
+    return self.data
 
   def get_campaigns_by_advertiser(self, advertiser_id):
     url = self.url + "/limit/advertiser={0}".format(advertiser_id)
@@ -73,13 +80,20 @@ class Campaign:
     return json.dumps(response_json)
 
   # updates existing campaigns
-  def save(self, payload, campaign_id):
-    campaign = self.t1.get('campaigns', campaign_id, include="advertiser")
-    if 'start_date' and 'end_date' in payload:
-      payload['start_date'] = self.normalize_date_time(payload['start_date'])
-      payload['end_date'] = self.normalize_date_time(payload['end_date'])
-    campaign.save(data=payload)
-    return campaign
+  def update_campaign(self, payload, campaign_id):
+    url = self.url + "/" + str(campaign_id)
+    response = requests.post(url, headers=self.headers, data=payload)
+    print 'response: ', response
+    print 'response json: ', response.json()
+    json_dict = response.json()
+
+
+    # campaign = self.t1.get('campaigns', campaign_id, include="advertiser")
+    # if 'start_date' and 'end_date' in payload:
+    #   payload['start_date'] = self.normalize_date_time(payload['start_date'])
+    #   payload['end_date'] = self.normalize_date_time(payload['end_date'])
+    # campaign.save(data=payload)
+    # return campaign
 
   def normalize_date_time(self, date, date_format='%Y-%m-%dT%H:%M:%S'):
     """
