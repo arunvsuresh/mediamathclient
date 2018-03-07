@@ -29,7 +29,7 @@ class Campaign:
              'Cookie': 'adama_session=' + str(t1.session_id)}
 
 
-  def generate_json_response(self, obj_type, json_dict, response, request_body):
+  def generate_json_response(self, json_dict, response, request_body):
     response_json = {
       "response_code": response.status_code,
       "request_body": request_body
@@ -53,7 +53,7 @@ class Campaign:
     response = requests.get(url, headers=self.headers)
     json_dict = response.json()
     request_body = url, self.headers
-    response_json = self.generate_json_response("campaign", json_dict, response, request_body)
+    response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
 
   def get_campaigns_by_advertiser(self, advertiser_id):
@@ -61,7 +61,7 @@ class Campaign:
     response = requests.get(url, headers=self.headers)
     json_dict = response.json()
     request_body = url, self.headers
-    response_json = self.generate_json_response("campaigns", json_dict, response, request_body)
+    response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
 
   def create_campaign(self, payload):
@@ -69,7 +69,7 @@ class Campaign:
     response = requests.post(url, headers=self.headers, data=payload)
     json_dict = response.json()
     request_body = url, self.headers
-    response_json = self.generate_json_response("campaigns", json_dict, response, request_body)
+    response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
 
   # updates existing campaigns
