@@ -104,3 +104,7 @@ class TestMediaMathCampaign(TestCase):
 
     updated_campaign = c.update_campaign(data, 485277)
     self.assertIn(json.loads(updated_campaign)['data']['name'], 'this is arun suresh\'s test campaign on 03/06/2018')
+
+  def test_get_budget_flights(self):
+    c = campaign.Campaign()
+    assert len(json.loads(c.get_budget_flights(485277))['data']) >= 1

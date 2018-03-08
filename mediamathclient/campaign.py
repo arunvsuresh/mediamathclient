@@ -94,3 +94,10 @@ class Campaign:
     date = datetime.datetime.strptime(date, date_format)
     return date
 
+  def get_budget_flights(self, campaign_id):
+    url = self.url + "/" + str(campaign_id) + "/budget_flights"
+    response = requests.get(url, headers=self.headers)
+    json_dict = response.json()
+    request_body = url, self.headers
+    response_json = self.generate_json_response(json_dict, response, request_body)
+    return json.dumps(response_json)
