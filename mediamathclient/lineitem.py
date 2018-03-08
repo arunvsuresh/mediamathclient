@@ -70,13 +70,13 @@ class LineItem:
     return json.dumps(response_json)
 
   # updates existing line items
-  def save(self, payload, lineitem_id):
-    line_item = self.t1.get('strategies', lineitem_id, include="campaign")
-    if 'start_date' and 'end_date' in payload:
-      payload['start_date'] = self.normalize_date_time(payload['start_date'])
-      payload['end_date'] = self.normalize_date_time(payload['end_date'])
-    line_item.save(data=payload)
-    return line_item
+  def update_lineitem(self, payload, lineitem_id):
+    url = self.url + "/" + str(lineitem_id)
+    response = requests.post(url, headers=self.headers, data=payload)
+    json_dict = response.json()
+    request_body = url, self.headers
+    response_json = self.generate_json_response(json_dict, response, request_body)
+    return json.dumps(response_json)
 
   def normalize_date_time(self, date, date_format='%Y-%m-%dT%H:%M:%S'):
     """

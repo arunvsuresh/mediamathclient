@@ -8,7 +8,6 @@ import datetime
 class DateException(Exception):
   pass
 
-
 # connect to t1
 def get_connection():
   creds = {
@@ -29,7 +28,6 @@ class Campaign:
              'Cookie': 'adama_session=' + str(t1.session_id)}
 
   def __init__(self, data=None, omg_campaign=None):
-    # super(Campaign, self).__init__()
 
     self.data = data
     self.omg_campaign = omg_campaign
@@ -83,17 +81,10 @@ class Campaign:
   def update_campaign(self, payload, campaign_id):
     url = self.url + "/" + str(campaign_id)
     response = requests.post(url, headers=self.headers, data=payload)
-    print 'response: ', response
-    print 'response json: ', response.json()
     json_dict = response.json()
-
-
-    # campaign = self.t1.get('campaigns', campaign_id, include="advertiser")
-    # if 'start_date' and 'end_date' in payload:
-    #   payload['start_date'] = self.normalize_date_time(payload['start_date'])
-    #   payload['end_date'] = self.normalize_date_time(payload['end_date'])
-    # campaign.save(data=payload)
-    # return campaign
+    request_body = url, self.headers
+    response_json = self.generate_json_response(json_dict, response, request_body)
+    return json.dumps(response_json)
 
   def normalize_date_time(self, date, date_format='%Y-%m-%dT%H:%M:%S'):
     """
@@ -102,5 +93,4 @@ class Campaign:
     """
     date = datetime.datetime.strptime(date, date_format)
     return date
-
 

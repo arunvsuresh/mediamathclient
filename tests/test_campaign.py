@@ -62,24 +62,45 @@ class TestMediaMathCampaign(TestCase):
     # initialize campaign instance
     c = campaign.Campaign()
     # get campaign by id
-    old_campaign = c.get_campaign_by_id(485277)
-    # convert json str to json dict
-    old_campaign = json.loads(old_campaign)
+    # old_campaign = c.get_campaign_by_id(485277)
+    # # # convert json str to json dict
+    # old_campaign = json.loads(old_campaign)
+    # del old_campaign['data']['id']
+    # del old_campaign['data']['initial_start_date']
+    # del old_campaign['data']['created_on']
+    # del old_campaign['data']['updated_on']
+    # del old_campaign['data']['entity_type']
+    # del old_campaign['data']['goal_value']
+    # del old_campaign['data']['use_mm_freq']
+    # del old_campaign['data']['dcs_data_is_campaign_level']
+    # del old_campaign['data']['frequency_optimization']
+    # del old_campaign['data']['has_custom_attribution']
+    # del old_campaign['data']['impression_cap_automatic']
+    # del old_campaign['data']['minimize_multi_ads']
+    # del old_campaign['data']['override_suspicious_traffic_filter']
+    # del old_campaign['data']['restrict_targeting_to_deterministic_id']
+    # del old_campaign['data']['restrict_targeting_to_same_device_id']
+    # del old_campaign['data']['spend_cap_automatic']
+    # del old_campaign['data']['total_budget']
+    # del old_campaign['data']['status']
+    # del old_campaign['data']['use_default_ad_server']
+    # print 'OLD CAMPAIGN: ', old_campaign['data']
+
+
+
     # get campaign id to pass into save()
-    campaign_id = old_campaign['data']['id']
-    print campaign_id
+    # campaign_id = old_campaign['data']['id']
     data = {
       'advertiser_id': 162259,
       'ad_server_id': 9,
-      # 'end_date': '2018-03-12T09:00:00',
-      'goal_type': 'spend',
-      'goal_value': '0.0001',
+      # # 'end_date': '2018-03-12T09:00:00',
+      # 'goal_type': 'spend',
+      # 'goal_value': '0.0001',
       'name': 'test campaign on 03/07/2018',
-      'service_type': 'SELF',
-      # 'start_date': '2018-03-11T23:59:00',
-      'total_budget': 2,
+      # 'service_type': 'SELF',
+      # # 'start_date': '2018-03-11T23:59:00',
+      # 'total_budget': 2,
     }
 
-    c.update_campaign(data, campaign_id)
-    # self.assertIn(updated_campaign['data']['name'], 'this is arun suresh\'s test campaign on 03/06/2018')
-    assert 1 == 1
+    updated_campaign = c.update_campaign(data, 485277)
+    self.assertIn(json.loads(updated_campaign)['data']['name'], 'this is arun suresh\'s test campaign on 03/06/2018')

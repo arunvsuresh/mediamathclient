@@ -64,18 +64,16 @@ class TestMediaMathLineItem(TestCase):
     line_item = lineitem.LineItem()
 
     # get line item by id
-    old_lineitem = line_item.get_lineitem_by_id(1188752)
-
-    # convert json str to json dict
-    old_lineitem = json.loads(old_lineitem)
-    # get line item id to pass into save()
-    lineitem_id = old_lineitem['data']['id']
+    # old_lineitem = line_item.get_lineitem_by_id(1188752)
+    #
+    # # convert json str to json dict
+    # old_lineitem = json.loads(old_lineitem)
+    # # get line item id to pass into save()
+    # lineitem_id = old_lineitem['data']['id']
 
     data = {
       'campaign_id': 243821,
       'name': 'arun\'s test line item 03/06/2018',
-      'start_date': '2018-03-02T23:59:00',
-      'end_date': '2018-03-10T09:00:00',
       'budget': 2,
       'pacing_amount': 0.01,
       'goal_type': 'spend',
@@ -83,7 +81,5 @@ class TestMediaMathLineItem(TestCase):
       'type': 'GBO',
     }
 
-    line_item.save(data, lineitem_id)
-    updated_lineitem = line_item.get_lineitem_by_id(1188752)
-    updated_lineitem = json.loads(updated_lineitem)
-    self.assertIn(updated_lineitem['data']['name'], 'arun\'s test line item 03/06/2018')
+    updated_lineitem = line_item.update_lineitem(data, 1188752)
+    self.assertIn(json.loads(updated_lineitem)['data']['name'], 'arun\'s test line item 03/06/2018')
