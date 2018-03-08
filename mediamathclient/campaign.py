@@ -95,7 +95,7 @@ class Campaign:
     return date
 
   def get_budget_flights(self, campaign_id):
-    url = self.url + "/" + str(campaign_id) + "/budget_flights"
+    url = self.url + "/" + str(campaign_id) + "/budget_flights?full=*"
     response = requests.get(url, headers=self.headers)
     json_dict = response.json()
     request_body = url, self.headers
