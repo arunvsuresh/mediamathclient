@@ -66,13 +66,20 @@ class Creative:
     return json.dumps(response_json)
 
   def get_creatives_by_lineitem(self, lineitem_id):
-
-    strategy_url = self.generate_url("strategies")
-    strategy_url = strategy_url + "/" + str(lineitem_id) + "/concepts"
+    strategy_url = self.generate_url("strategies") + "/" + str(lineitem_id) + "/concepts"
     response = requests.get(strategy_url, headers=self.headers)
+    request_body = strategy_url, self.headers
     json_dict = response.json()
-    concept_ids = [concept['id'] for concept in json_dict['data']]
+    if 'errors' in response.json():
+      response_json = self.generate_json_response(json_dict, response, request_body)
+      return json.dumps(response_json)
+    else:
+      concept_ids = [concept['id'] for concept in json_dict['data']]
+      json_dict, response = self.make_creatives_call(concept_ids)
+      response_json = self.generate_json_response(json_dict, response, request_body)
+      return json.dumps(response_json)
 
+  def make_creatives_call(self, concept_ids):
     creative_response = []
     json_dict = {}
     errors = []
@@ -85,13 +92,13 @@ class Creative:
       else:
         creative_response.append(response.json()['data'])
 
+    # if errors exist within creative calls
     if len(errors) >= 1:
       json_dict['errors'] = errors
 
     else:
+      # flatten multi-dim array
       creative_response = list(itertools.chain.from_iterable(creative_response))
       json_dict['data'] = creative_response
+    return json_dict, response
 
-    request_body = strategy_url, self.headers
-    response_json = self.generate_json_response(json_dict, response, request_body)
-    return json.dumps(response_json)

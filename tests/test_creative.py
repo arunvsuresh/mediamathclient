@@ -16,15 +16,15 @@ class TestMediaMathcreative(TestCase):
     c = json.loads(c)
     self.assertIn(c['msg_type'], 'success')
 
-  def test_get_creatives_by_concept(self):
+  def test_get_creatives_by_lineitem(self):
     c = creative.Creative()
-    creatives = c.get_creatives_by_concept(1550782)
+    creatives = c.get_creatives_by_lineitem(2360784)
     c = json.loads(creatives)
     self.assertIn(c['msg_type'], 'success')
 
   # pass in bad data to test for proper error handling
-  def test_error_in_get_creative_by_concept(self):
+  def test_error_in_get_creatives_by_lineitem(self):
     c = creative.Creative()
-    creatives = c.get_creatives_by_concept('a')
+    creatives = c.get_creatives_by_lineitem('a')
     c = json.loads(creatives)
     self.assertIn(c['msg_type'], 'error')
