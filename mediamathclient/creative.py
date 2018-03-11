@@ -2,6 +2,7 @@ import json
 import requests
 import os
 import terminalone
+import itertools
 
 
 # connect to t1
@@ -24,9 +25,13 @@ class Creative:
     if obj_type == "atomic_creatives":
       service_url = self.t1._get_service_path('atomic_creatives') + "/"
       constructed_url = self.t1._construct_url("atomic_creatives", entity=None, child=None, limit=None)[0]
-    elif obj_type == "concepts":
-      service_url = self.t1._get_service_path('concepts') + "/"
-      constructed_url = self.t1._construct_url("concepts", entity=None, child=None, limit=None)[0]
+    elif obj_type == "strategy_concepts":
+      service_url = self.t1._get_service_path('strategy_concepts') + "/"
+      constructed_url = self.t1._construct_url("strategy_concepts", entity=None, child=None, limit=None)[0]
+
+    elif obj_type == "strategies":
+      service_url = self.t1._get_service_path('strategies') + "/"
+      constructed_url = self.t1._construct_url("strategies", entity=None, child=None, limit=None)[0]
 
     base_url = "https://" + self.t1.api_base + "/"
     url = base_url + service_url + constructed_url
@@ -60,12 +65,33 @@ class Creative:
     response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
 
-  def get_creatives_by_concept(self, concept_id):
-    url = self.generate_url("atomic_creatives")
-    url = url + "/limit/concept={0}".format(concept_id)
-    response = requests.get(url, headers=self.headers)
+  def get_creatives_by_lineitem(self, lineitem_id):
+
+    strategy_url = self.generate_url("strategies")
+    strategy_url = strategy_url + "/" + str(lineitem_id) + "/concepts"
+    response = requests.get(strategy_url, headers=self.headers)
     json_dict = response.json()
-    request_body = url, self.headers
+    concept_ids = [concept['id'] for concept in json_dict['data']]
+
+    creative_response = []
+    json_dict = {}
+    errors = []
+    for concept_id in concept_ids:
+      # create url for each concept id
+      creative_url = self.generate_url("atomic_creatives") + "/limit/concept={0}".format(concept_id)
+      response = requests.get(creative_url, headers=self.headers)
+      if 'errors' in response.json():
+        errors.append(response.json()['errors'][0])
+      else:
+        creative_response.append(response.json()['data'])
+
+    if len(errors) >= 1:
+      json_dict['errors'] = errors
+
+    else:
+      creative_response = list(itertools.chain.from_iterable(creative_response))
+      json_dict['data'] = creative_response
+
+    request_body = strategy_url, self.headers
     response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
-
