@@ -12,7 +12,7 @@ class TestMediaMathLineItem(TestCase):
 
   def test_get_lineitem_by_id(self):
     line_item = lineitem.LineItem()
-    line_item = line_item.get_lineitem_by_id(1188752)
+    line_item = line_item.get_lineitem_by_id(1197492)
     line_item = json.loads(line_item)
     self.assertIn(line_item['msg_type'], 'success')
 
@@ -83,3 +83,9 @@ class TestMediaMathLineItem(TestCase):
 
     updated_lineitem = line_item.update_lineitem(data, 1188752)
     self.assertIn(json.loads(updated_lineitem)['data']['name'], 'arun\'s test line item 03/06/2018')
+
+  def test_assign_sitelist_to_strategy(self):
+    line_item = lineitem.LineItem()
+    li = line_item.assign_sitelist_to_strategy(1197492, [117705, 117706])
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')

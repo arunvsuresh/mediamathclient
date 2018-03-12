@@ -85,3 +85,20 @@ class LineItem:
     """
     date = datetime.datetime.strptime(date, date_format)
     return date
+
+  def assign_sitelist_to_strategy(self, lineitem_id, sitelist_ids):
+    url = self.url + "/" + str(lineitem_id) + "/site_lists"
+    payload = {
+
+    }
+    for idx, sitelist_id in enumerate(sitelist_ids):
+      index = 'site_lists.{0}.id'.format(str(idx + 1))
+      assigned = 'site_lists.{0}.assigned'.format(str(idx + 1))
+      payload[index] = sitelist_id
+      payload[assigned] = int(True)
+    response = requests.post(url, headers=self.headers, data=payload)
+    json_dict = response.json()
+    request_body = url, self.headers
+    response_json = self.generate_json_response(json_dict, response, request_body)
+    return json.dumps(response_json)
+
