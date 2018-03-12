@@ -73,11 +73,15 @@ class Creative:
     if 'errors' in response.json():
       response_json = self.generate_json_response(json_dict, response, request_body)
       return json.dumps(response_json)
+    elif len(json_dict['data']) == 0:
+      response_json = self.generate_json_response(json_dict, response, request_body)
+      return json.dumps(response_json)
     else:
       concept_ids = [concept['id'] for concept in json_dict['data']]
       json_dict, response = self.make_creatives_call(concept_ids)
       response_json = self.generate_json_response(json_dict, response, request_body)
       return json.dumps(response_json)
+
 
   def make_creatives_call(self, concept_ids):
     creative_response = []
