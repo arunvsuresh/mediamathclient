@@ -89,3 +89,15 @@ class TestMediaMathLineItem(TestCase):
     li = line_item.assign_sitelist_to_strategy(1197492, [117705, 117706])
     li = json.loads(li)
     self.assertIn(li['msg_type'], 'success')
+
+  def test_update_strategy_domain_restrictions(self):
+    line_item = lineitem.LineItem()
+    li = line_item.update_strategy_domain_restrictions(1197492, ['youtube.com', 'yahoo.com', 'about.com', 'google.com'])
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')
+
+  def test_get_strategy_domain_restrictions(self):
+    line_item = lineitem.LineItem()
+    li = line_item.get_strategy_domain_restrictions(766906)
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')

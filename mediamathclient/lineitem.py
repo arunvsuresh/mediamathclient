@@ -37,12 +37,15 @@ class LineItem:
       response_json['msg'] = json_dict['errors']
       response_json['data'] = json_dict['errors']
 
-    else:
-      response_json['data'] = json_dict['data']
-      response_json['data'] = json_dict['data']
+    elif 'data' not in json_dict:
+      response_json['data'] = json_dict
       response_json['msg_type'] = 'success'
       response_json['msg'] = ''
 
+    else:
+      response_json['data'] = json_dict['data']
+      response_json['msg_type'] = 'success'
+      response_json['msg'] = ''
     return response_json
 
   def get_lineitem_by_id(self, lineitem_id):
@@ -97,6 +100,32 @@ class LineItem:
       payload[index] = sitelist_id
       payload[assigned] = int(True)
     response = requests.post(url, headers=self.headers, data=payload)
+    json_dict = response.json()
+    request_body = url, self.headers
+    response_json = self.generate_json_response(json_dict, response, request_body)
+    return json.dumps(response_json)
+
+  def update_strategy_domain_restrictions(self, lineitem_id, domains):
+    url = self.url + "/" + str(lineitem_id) + "/domain_restrictions"
+    payload = {
+
+    }
+
+    for idx, domain in enumerate(domains):
+      index_domain = 'domains.{0}.domain'.format(str(idx + 1))
+      index_restriction = 'domains.{0}.restriction'.format(str(idx + 1))
+      payload[index_domain] = domain
+      payload[index_restriction] = "INCLUDE"
+
+    response = requests.post(url, headers=self.headers, data=payload)
+    json_dict = response.json()
+    request_body = url, self.headers
+    response_json = self.generate_json_response(json_dict, response, request_body)
+    return json.dumps(response_json)
+
+  def get_strategy_domain_restrictions(self, lineitem_id):
+    url = self.url + "/" + str(lineitem_id) + "/domain_restrictions"
+    response = requests.get(url, headers=self.headers)
     json_dict = response.json()
     request_body = url, self.headers
     response_json = self.generate_json_response(json_dict, response, request_body)
