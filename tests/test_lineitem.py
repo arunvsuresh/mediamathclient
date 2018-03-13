@@ -28,8 +28,8 @@ class TestMediaMathLineItem(TestCase):
     data = {
       'campaign_id': 243821,
       'name': 'arun test line item 03/02/2018',
-      'start_date': '2018-03-07T23:59:00+0000',
-      'end_date': '2018-03-10T09:00:00+0000',
+      'start_date': '2018-03-13T23:59:00+0000',
+      'end_date': '2018-03-16T09:00:00+0000',
       'budget': 2,
       'pacing_amount': 0.01,
       'goal_type': 'spend',
@@ -38,6 +38,7 @@ class TestMediaMathLineItem(TestCase):
     }
     new_lineitem = line_item.create_lineitem(data)
     new_lineitem = json.loads(new_lineitem)
+    print new_lineitem
     self.assertIn(new_lineitem['msg_type'], 'success')
 
   # test when missing required field (campaign_id in this case)
@@ -96,8 +97,14 @@ class TestMediaMathLineItem(TestCase):
     li = json.loads(li)
     self.assertIn(li['msg_type'], 'success')
 
-  def test_get_strategy_domain_restrictions(self):
+  def test_set_deal_targeting_for_strategy(self):
     line_item = lineitem.LineItem()
-    li = line_item.get_strategy_domain_restrictions(766906)
+    li = line_item.set_deal_targeting_for_strategy(1197492, [63505,79600])
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')
+
+  def test_set_strategy_exchanges(self):
+    line_item = lineitem.LineItem()
+    li = line_item.set_strategy_exchanges(1197492, [159])
     li = json.loads(li)
     self.assertIn(li['msg_type'], 'success')

@@ -123,11 +123,38 @@ class LineItem:
     response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
 
-  def get_strategy_domain_restrictions(self, lineitem_id):
-    url = self.url + "/" + str(lineitem_id) + "/domain_restrictions"
-    response = requests.get(url, headers=self.headers)
+  def set_deal_targeting_for_strategy(self, lineitem_id, deal_ids):
+    url = self.url + "/" + str(lineitem_id) + "/deals"
+    payload = {
+
+    }
+    for idx, deal in enumerate(deal_ids):
+      index = 'deal.{0}.id'.format(str(idx + 1))
+      payload[index] = str(deal)
+
+    payload["all_pmp"] = 0
+    payload["all_exchanges"] = 0
+
+    response = requests.post(url, headers=self.headers, data=payload)
     json_dict = response.json()
     request_body = url, self.headers
     response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
 
+  def set_strategy_exchanges(self, lineitem_id, exchange_ids):
+    url = self.url + "/" + str(lineitem_id) + "/supplies"
+    payload = {
+
+    }
+    for idx, exchange_id in enumerate(exchange_ids):
+      index = 'supply_source.{0}.id'.format(str(idx + 1))
+      payload[index] = str(exchange_id)
+
+    payload["all_pmp"] = 0
+    payload["all_exchanges"] = 0
+
+    response = requests.post(url, headers=self.headers, data=payload)
+    json_dict = response.json()
+    request_body = url, self.headers
+    response_json = self.generate_json_response(json_dict, response, request_body)
+    return json.dumps(response_json)
