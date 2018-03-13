@@ -52,43 +52,18 @@ class LineItem:
     url = self.url + "/" + str(lineitem_id)
     return self.make_call(url, 'GET')
 
-    # response = requests.get(url, headers=self.headers)
-    # json_dict = response.json()
-    # request_body = url, self.headers
-    # response_json = self.generate_json_response(json_dict, response, request_body)
-    # return json.dumps(response_json)
-
   def get_lineitems_by_campaign(self, campaign_id):
     url = self.url + "/limit/campaign={0}".format(campaign_id)
-
     return self.make_call(url, 'GET')
-    # response = requests.get(url, headers=self.headers)
-    # json_dict = response.json()
-    # request_body = url, self.headers
-    # response_json = self.generate_json_response(json_dict, response, request_body)
-    # return json.dumps(response_json)
 
   def create_lineitem(self, payload):
     url = self.url
-
     return self.make_call(url, 'POST', payload)
-
-    # response = requests.post(url, headers=self.headers, data=payload)
-    # json_dict = response.json()
-    # request_body = url, self.headers
-    # response_json = self.generate_json_response(json_dict, response, request_body)
-    # return json.dumps(response_json)
 
   # updates existing line items
   def update_lineitem(self, payload, lineitem_id):
     url = self.url + "/" + str(lineitem_id)
     return self.make_call(url, 'POST', payload)
-
-    # response = requests.post(url, headers=self.headers, data=payload)
-    # json_dict = response.json()
-    # request_body = url, self.headers
-    # response_json = self.generate_json_response(json_dict, response, request_body)
-    # return json.dumps(response_json)
 
   def normalize_date_time(self, date, date_format='%Y-%m-%dT%H:%M:%S'):
     """
@@ -111,11 +86,18 @@ class LineItem:
 
     return self.make_call(url, 'POST', payload)
 
-    # response = requests.post(url, headers=self.headers, data=payload)
-    # json_dict = response.json()
-    # request_body = url, self.headers
-    # response_json = self.generate_json_response(json_dict, response, request_body)
-    # return json.dumps(response_json)
+  def remove_sitelist_from_strategy(self, lineitem_id, sitelist_ids):
+    url = self.url + "/" + str(lineitem_id) + "/site_lists"
+    payload = {
+
+    }
+    for idx, sitelist_id in enumerate(sitelist_ids):
+      index = 'site_lists.{0}.id'.format(str(idx + 1))
+      assigned = 'site_lists.{0}.assigned'.format(str(idx + 1))
+      payload[index] = sitelist_id
+      payload[assigned] = int(False)
+
+    return self.make_call(url, 'POST', payload)
 
   def update_strategy_domain_restrictions(self, lineitem_id, domains):
     url = self.url + "/" + str(lineitem_id) + "/domain_restrictions"
@@ -131,12 +113,6 @@ class LineItem:
 
     return self.make_call(url, 'POST', payload)
 
-    # response = requests.post(url, headers=self.headers, data=payload)
-    # json_dict = response.json()
-    # request_body = url, self.headers
-    # response_json = self.generate_json_response(json_dict, response, request_body)
-    # return json.dumps(response_json)
-
   def set_deal_targeting_for_strategy(self, lineitem_id, deal_ids):
     url = self.url + "/" + str(lineitem_id) + "/deals"
     payload = {
@@ -150,12 +126,6 @@ class LineItem:
     payload["all_exchanges"] = 0
 
     return self.make_call(url, 'POST', payload)
-
-    # response = requests.post(url, headers=self.headers, data=payload)
-    # json_dict = response.json()
-    # request_body = url, self.headers
-    # response_json = self.generate_json_response(json_dict, response, request_body)
-    # return json.dumps(response_json)
 
   def set_strategy_exchanges(self, lineitem_id, exchange_ids):
     url = self.url + "/" + str(lineitem_id) + "/supplies"
@@ -171,13 +141,8 @@ class LineItem:
 
     return self.make_call(url, 'POST', payload)
 
-    # response = requests.post(url, headers=self.headers, data=payload)
-    # json_dict = response.json()
-    # request_body = url, self.headers
-    # response_json = self.generate_json_response(json_dict, response, request_body)
-    # return json.dumps(response_json)
-
   def make_call(self, url, method_type, payload=None):
+
     if method_type == 'GET':
       response = requests.get(url, headers=self.headers)
       json_dict = response.json()

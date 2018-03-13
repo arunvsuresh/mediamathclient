@@ -38,7 +38,6 @@ class TestMediaMathLineItem(TestCase):
     }
     new_lineitem = line_item.create_lineitem(data)
     new_lineitem = json.loads(new_lineitem)
-    print new_lineitem
     self.assertIn(new_lineitem['msg_type'], 'success')
 
   # test when missing required field (campaign_id in this case)
@@ -88,6 +87,12 @@ class TestMediaMathLineItem(TestCase):
   def test_assign_sitelist_to_strategy(self):
     line_item = lineitem.LineItem()
     li = line_item.assign_sitelist_to_strategy(1197492, [117705, 117706])
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')
+
+  def test_remove_sitelist_from_strategy(self):
+    line_item = lineitem.LineItem()
+    li = line_item.remove_sitelist_from_strategy(1197492, [117705, 117706])
     li = json.loads(li)
     self.assertIn(li['msg_type'], 'success')
 
