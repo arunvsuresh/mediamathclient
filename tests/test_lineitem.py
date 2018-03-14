@@ -28,7 +28,7 @@ class TestMediaMathLineItem(TestCase):
     data = {
       'campaign_id': 243821,
       'name': 'arun test line item 03/02/2018',
-      'start_date': '2018-03-13T23:59:00+0000',
+      'start_date': '2018-03-15T23:59:00+0000',
       'end_date': '2018-03-16T09:00:00+0000',
       'budget': 2,
       'pacing_amount': 0.01,
@@ -111,5 +111,17 @@ class TestMediaMathLineItem(TestCase):
   def test_set_strategy_exchanges(self):
     line_item = lineitem.LineItem()
     li = line_item.set_strategy_exchanges(1197492, [159])
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')
+
+  def test_get_deals(self):
+    line_item = lineitem.LineItem()
+    li = line_item.get_valid_deals()
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')
+
+  def test_get_deals_by_advertiser(self):
+    line_item = lineitem.LineItem()
+    li = line_item.get_deals_by_advertiser(100429)
     li = json.loads(li)
     self.assertIn(li['msg_type'], 'success')

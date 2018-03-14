@@ -141,10 +141,32 @@ class LineItem:
 
     return self.make_call(url, 'POST', payload)
 
+  def get_valid_deals(self):
+    base_url = "https://" + self.t1.api_base + "/"
+    service_url = self.t1._get_service_path('deals') + "/"
+    constructed_url = self.t1._construct_url("deals", entity=None, child=None, limit=None)[0]
+    url = base_url + service_url + constructed_url + "/?full=*"
+
+    return self.make_call(url, 'GET')
+
+  def get_deals_by_advertiser(self, advertiser_id):
+
+    data = {}
+    data['permissions'] = {
+      "advertiser_id": advertiser_id
+    }
+
+    base_url = "https://" + self.t1.api_base + "/"
+    service_url = self.t1._get_service_path('deals') + "/"
+    constructed_url = self.t1._construct_url("deals", entity=None, child=None, limit=None)[0]
+    url = base_url + service_url + constructed_url
+    params = self.t1._construct_params("deals", include=data)
+    return self.make_call(url, 'GET', params)
+
   def make_call(self, url, method_type, payload=None):
 
     if method_type == 'GET':
-      response = requests.get(url, headers=self.headers)
+      response = requests.get(url, headers=self.headers, data=payload)
       json_dict = response.json()
       request_body = url, self.headers
       response_json = self.generate_json_response(json_dict, response, request_body)
