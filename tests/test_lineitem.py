@@ -12,15 +12,15 @@ class TestMediaMathLineItem(TestCase):
 
   def test_get_lineitem_by_id(self):
     line_item = lineitem.LineItem()
-    line_item = line_item.get_lineitem_by_id(1197492)
-    line_item = json.loads(line_item)
-    self.assertIn(line_item['msg_type'], 'success')
+    li = line_item.get_lineitem_by_id(1197492)
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')
 
   def test_get_lineitems_by_campaign(self):
     line_item = lineitem.LineItem()
-    line_item = line_item.get_lineitems_by_campaign(243821)
-    line_item = json.loads(line_item)
-    self.assertIn(line_item['msg_type'], 'success')
+    li = line_item.get_lineitems_by_campaign(243821)
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')
 
   def test_create_lineitem(self):
     line_item = lineitem.LineItem()

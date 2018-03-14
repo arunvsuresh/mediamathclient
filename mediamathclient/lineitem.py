@@ -2,8 +2,7 @@ import json
 import requests
 import os
 import terminalone
-import xmltodict
-import datetime
+
 
 def get_connection():
   creds = {
@@ -16,12 +15,24 @@ def get_connection():
 class LineItem:
 
   t1 = get_connection()
-  base_url = "https://" + t1.api_base + "/"
-  service_url = t1._get_service_path('strategies') + "/"
-  constructed_url = t1._construct_url("strategies", entity=None, child=None, limit=None)[0]
-  url = base_url + service_url + constructed_url
   headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.mediamath.v1+json',
              'Cookie': 'adama_session=' + str(t1.session_id)}
+
+  def generate_url(self, obj_type):
+
+    base_url = "https://" + self.t1.api_base + "/"
+
+    if obj_type == "strategies":
+      service_url = self.t1._get_service_path('strategies') + "/"
+      constructed_url = self.t1._construct_url("strategies", entity=None, child=None, limit=None)[0]
+      url = base_url + service_url + constructed_url
+      return url
+
+    elif obj_type == "deals":
+      service_url = self.t1._get_service_path('deals') + "/"
+      constructed_url = self.t1._construct_url("deals", entity=None, child=None, limit=None)[0]
+      url = base_url + service_url + constructed_url
+      return url
 
 
   def generate_json_response(self, json_dict, response, request_body):
@@ -49,32 +60,24 @@ class LineItem:
     return response_json
 
   def get_lineitem_by_id(self, lineitem_id):
-    url = self.url + "/" + str(lineitem_id)
+    url = self.generate_url('strategies') + "/" + str(lineitem_id)
     return self.make_call(url, 'GET')
 
   def get_lineitems_by_campaign(self, campaign_id):
-    url = self.url + "/limit/campaign={0}".format(campaign_id)
+    url = self.generate_url('strategies') + "/limit/campaign={0}".format(campaign_id)
     return self.make_call(url, 'GET')
 
   def create_lineitem(self, payload):
-    url = self.url
+    url = self.generate_url('strategies')
     return self.make_call(url, 'POST', payload)
 
   # updates existing line items
   def update_lineitem(self, payload, lineitem_id):
-    url = self.url + "/" + str(lineitem_id)
+    url = self.generate_url('strategies') + "/" + str(lineitem_id)
     return self.make_call(url, 'POST', payload)
 
-  def normalize_date_time(self, date, date_format='%Y-%m-%dT%H:%M:%S'):
-    """
-      convert datetime str to datetime obj, since MM handles datetime obj --> str conversion on their end
-      only needed for update(), not for create
-    """
-    date = datetime.datetime.strptime(date, date_format)
-    return date
-
   def assign_sitelist_to_strategy(self, lineitem_id, sitelist_ids):
-    url = self.url + "/" + str(lineitem_id) + "/site_lists"
+    url = self.generate_url('strategies') + "/" + str(lineitem_id) + "/site_lists"
     payload = {
 
     }
@@ -87,7 +90,7 @@ class LineItem:
     return self.make_call(url, 'POST', payload)
 
   def remove_sitelist_from_strategy(self, lineitem_id, sitelist_ids):
-    url = self.url + "/" + str(lineitem_id) + "/site_lists"
+    url = self.generate_url('strategies') + "/" + str(lineitem_id) + "/site_lists"
     payload = {
 
     }
@@ -100,7 +103,7 @@ class LineItem:
     return self.make_call(url, 'POST', payload)
 
   def update_strategy_domain_restrictions(self, lineitem_id, domains):
-    url = self.url + "/" + str(lineitem_id) + "/domain_restrictions"
+    url = self.generate_url('strategies') + "/" + str(lineitem_id) + "/domain_restrictions"
     payload = {
 
     }
@@ -114,7 +117,7 @@ class LineItem:
     return self.make_call(url, 'POST', payload)
 
   def set_deal_targeting_for_strategy(self, lineitem_id, deal_ids):
-    url = self.url + "/" + str(lineitem_id) + "/deals"
+    url = self.generate_url('strategies') + "/" + str(lineitem_id) + "/deals"
     payload = {
 
     }
@@ -128,7 +131,7 @@ class LineItem:
     return self.make_call(url, 'POST', payload)
 
   def set_strategy_exchanges(self, lineitem_id, exchange_ids):
-    url = self.url + "/" + str(lineitem_id) + "/supplies"
+    url = self.generate_url('strategies') + "/" + str(lineitem_id) + "/supplies"
     payload = {
 
     }
@@ -142,24 +145,15 @@ class LineItem:
     return self.make_call(url, 'POST', payload)
 
   def get_valid_deals(self):
-    base_url = "https://" + self.t1.api_base + "/"
-    service_url = self.t1._get_service_path('deals') + "/"
-    constructed_url = self.t1._construct_url("deals", entity=None, child=None, limit=None)[0]
-    url = base_url + service_url + constructed_url + "/?full=*"
-
+    url = self.generate_url('deals') + "/?full=*"
     return self.make_call(url, 'GET')
 
   def get_deals_by_advertiser(self, advertiser_id):
-
     data = {}
     data['permissions'] = {
       "advertiser_id": advertiser_id
     }
-
-    base_url = "https://" + self.t1.api_base + "/"
-    service_url = self.t1._get_service_path('deals') + "/"
-    constructed_url = self.t1._construct_url("deals", entity=None, child=None, limit=None)[0]
-    url = base_url + service_url + constructed_url
+    url = self.generate_url('deals')
     params = self.t1._construct_params("deals", include=data)
     return self.make_call(url, 'GET', params)
 
