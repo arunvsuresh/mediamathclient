@@ -4,10 +4,6 @@ import os
 import terminalone
 import datetime
 
-
-class DateException(Exception):
-  pass
-
 # connect to t1
 def get_connection():
   creds = {
@@ -53,6 +49,7 @@ class Campaign:
     return response_json
 
   def get_campaign_by_id(self, campaign_id):
+    campaign_id = int(campaign_id)
     url = self.url + "/" + str(campaign_id)
     response = requests.get(url, headers=self.headers)
     json_dict = response.json()
@@ -62,6 +59,7 @@ class Campaign:
     return self.data
 
   def get_campaigns_by_advertiser(self, advertiser_id):
+    advertiser_id = int(advertiser_id)
     url = self.url + "/limit/advertiser={0}".format(advertiser_id)
     response = requests.get(url, headers=self.headers)
     json_dict = response.json()
@@ -79,6 +77,7 @@ class Campaign:
 
   # updates existing campaigns
   def update_campaign(self, payload, campaign_id):
+    campaign_id = int(campaign_id)
     url = self.url + "/" + str(campaign_id)
     response = requests.post(url, headers=self.headers, data=payload)
     json_dict = response.json()
@@ -86,15 +85,8 @@ class Campaign:
     response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
 
-  def normalize_date_time(self, date, date_format='%Y-%m-%dT%H:%M:%S'):
-    """
-      convert datetime str to datetime obj, since MM handles datetime obj --> str conversion on their end
-      only needed for update(), not for create
-    """
-    date = datetime.datetime.strptime(date, date_format)
-    return date
-
   def get_budget_flights(self, campaign_id):
+    campaign_id = int(campaign_id)
     url = self.url + "/" + str(campaign_id) + "/budget_flights?full=*"
     response = requests.get(url, headers=self.headers)
     json_dict = response.json()
