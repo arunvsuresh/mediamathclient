@@ -88,8 +88,9 @@ class Creative:
     json_dict = {}
     errors = []
     for concept_id in concept_ids:
+      concept_id = int(concept_id)
       # create url for each concept id
-      creative_url = self.generate_url("atomic_creatives") + "/limit/concept={0}".format(concept_id)
+      creative_url = self.generate_url("atomic_creatives") + "/limit/concept={0}".format(str(concept_id))
       response = requests.get(creative_url, headers=self.headers)
       if 'errors' in response.json():
         errors.append(response.json()['errors'][0])

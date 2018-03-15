@@ -18,7 +18,7 @@ class TestMediaMathcreative(TestCase):
 
   def test_get_creatives_by_lineitem(self):
     c = creative.Creative()
-    creatives = c.get_creatives_by_lineitem(2360784)
+    creatives = c.get_creatives_by_lineitem(3181791)
     c = json.loads(creatives)
     self.assertIn(c['msg_type'], 'success')
 

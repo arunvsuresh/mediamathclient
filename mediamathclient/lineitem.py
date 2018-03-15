@@ -64,7 +64,8 @@ class LineItem:
     return self.make_call(url, 'GET')
 
   def get_lineitems_by_campaign(self, campaign_id):
-    url = self.generate_url('strategies') + "/limit/campaign={0}".format(campaign_id)
+    campaign_id = int(campaign_id)
+    url = self.generate_url('strategies') + "/limit/campaign={0}".format(str(campaign_id))
     return self.make_call(url, 'GET')
 
   def create_lineitem(self, payload):
@@ -131,6 +132,7 @@ class LineItem:
     return self.make_call(url, 'POST', payload)
 
   def set_strategy_exchanges(self, lineitem_id, exchange_ids):
+    lineitem_id = int(lineitem_id)
     url = self.generate_url('strategies') + "/" + str(lineitem_id) + "/supplies"
     payload = {
 
@@ -145,17 +147,83 @@ class LineItem:
     return self.make_call(url, 'POST', payload)
 
   def get_valid_deals(self):
-    url = self.generate_url('deals') + "/?full=*"
-    return self.make_call(url, 'GET')
+
+    deals = self.t1.get_all("deals", full=True, get_all=True, count=True)
+    print deals
+    # url = self.generate_url('deals') + "/?full=*"
+    # return self.make_call(url, 'GET')
 
   def get_deals_by_advertiser(self, advertiser_id):
-    data = {}
-    data['permissions'] = {
-      "advertiser_id": advertiser_id
+    # data = {}
+    # data['permissions'] = {
+    #   "advertiser_id": advertiser_id
+    # }
+    data = {
+      'full': '*',
+      'with': {
+                'permissions': {
+                   'advertiser_id': advertiser_id
+                 }
+              }
     }
+
     url = self.generate_url('deals')
-    params = self.t1._construct_params("deals", include=data)
-    return self.make_call(url, 'GET', params)
+    print url
+    # params = self.t1._construct_params("deals", include=data, full=True)
+    # print params
+
+    """
+      iterate over each page
+    """
+
+    response = requests.get(url, headers=self.headers, data=data)
+    # content_type = response.headers.get('Content-type')
+    #
+    #
+    #
+    # response_body = self.t1._get_parser(content_type, response)
+    # parsed_data = json.loads(response_body)
+    # paginated_data = []
+    # for page in parsed_data['meta']['next_page']:
+    #   next_page_url = parsed_data['meta']['next_page']
+    #   response = requests.get(next_page_url, headers=self.headers, data=data)
+    #   paginated_data.append(response.json())
+    # return paginated_data
+    # data = parsed_data.get('data')
+    # print 'type of data: ', type(data)
+    # result = parser(response_body)
+    # return result.entities
+    # deals = self.t1._parse_response(response)[0]
+    # print deals.__sizeof__()
+    # for deal in deals:
+    #   print deal
+
+
+    # return self.make_call(url, 'GET', params)
+
+    # t1 = get_mediamath_connection()
+
+    # data = {}
+    # data['permissions'] = {
+    #   "advertiser_id": advertiser_id
+    # }
+    #
+    # json_dict = {
+    #   'data': []
+    # }
+    #
+    # deals = self.t1.get("deals", include=data, get_all=True)
+    # if deals:
+    #
+    #   for deal in deals:
+    #     json_dict['data'].append(deal)
+
+
+    # return json_dict['data']
+
+
+    # print deals
+    # print dir(deals[0]).__sizeof__()
 
   def make_call(self, url, method_type, payload=None):
 
