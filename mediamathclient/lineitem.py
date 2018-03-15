@@ -59,6 +59,7 @@ class LineItem:
       response_json['data'] = json_dict['data']
       response_json['msg_type'] = 'success'
       response_json['msg'] = ''
+
     return response_json
 
   def get_lineitem_by_id(self, lineitem_id):
@@ -150,10 +151,7 @@ class LineItem:
 
   def get_deals(self):
 
-    # deals = self.t1.get_all("deals", full=True, get_all=True, count=True)
-    # print deals
-
-    # make an initial request to pull all deals so we get the intial page/total_count info
+    # make an initial request to pull all deals so we get the initial page/total_count info
     url = self.generate_url('deals') + "/?full=*"
     initial_response = requests.get(url, headers=self.headers)
     request_body = url, self.headers
@@ -184,77 +182,39 @@ class LineItem:
       response_json = self.generate_json_response(json_dict, initial_response, request_body)
       return json.dumps(response_json)
 
-  # def get_deals_by_advertiser(self, advertiser_id):
-  #   # data = {}
-  #   # data['permissions'] = {
-  #   #   "advertiser_id": advertiser_id
-  #   # }
-  #   data = {
-  #     'full': '*',
-  #     'with': {
-  #               'permissions': {
-  #                  'advertiser_id': advertiser_id
-  #                }
-  #             }
-  #   }
-  #
-  #   url = self.generate_url('deals')
-  #   print url
-  #   # params = self.t1._construct_params("deals", include=data, full=True)
-  #   # print params
-  #
-  #   """
-  #     iterate over each page
-  #   """
-  #
-  #   response = requests.get(url, headers=self.headers, data=data)
-    # content_type = response.headers.get('Content-type')
-    #
-    #
-    #
-    # response_body = self.t1._get_parser(content_type, response)
-    # parsed_data = json.loads(response_body)
-    # paginated_data = []
-    # for page in parsed_data['meta']['next_page']:
-    #   next_page_url = parsed_data['meta']['next_page']
-    #   response = requests.get(next_page_url, headers=self.headers, data=data)
-    #   paginated_data.append(response.json())
-    # return paginated_data
-    # data = parsed_data.get('data')
-    # print 'type of data: ', type(data)
-    # result = parser(response_body)
-    # return result.entities
-    # deals = self.t1._parse_response(response)[0]
-    # print deals.__sizeof__()
-    # for deal in deals:
-    #   print deal
+  def get_deals_by_advertiser(self, advertiser_id):
 
+    # make an initial request to pull all deals with advertiser_id perms so we get the initial page/total_count info
+    url = self.generate_url('deals') + "/?permissions.advertiser_id={0}".format(advertiser_id)
+    initial_response = requests.get(url, headers=self.headers)
+    request_body = url, self.headers
+    if 'errors' in initial_response.json():
+      response_json = self.generate_json_response(initial_response.json(), initial_response, request_body)
+      return json.dumps(response_json)
 
-    # return self.make_call(url, 'GET', params)
+    else:
 
-    # t1 = get_mediamath_connection()
+      """
+          iterate through each page with the step being the page_offset of 100
+      """
+      # get the url for the next page of records to pull from
+      next_page_url = initial_response.json()['meta']['next_page']
+      # get the total count of all deals
+      total_count = initial_response.json()['meta']['total_count']
 
-    # data = {}
-    # data['permissions'] = {
-    #   "advertiser_id": advertiser_id
-    # }
-    #
-    # json_dict = {
-    #   'data': []
-    # }
-    #
-    # deals = self.t1.get("deals", include=data, get_all=True)
-    # if deals:
-    #
-    #   for deal in deals:
-    #     json_dict['data'].append(deal)
+      page_data = []
+      # set 100 as the step since you can only have 100 records per page
+      for page_offset in range(0, total_count, 100):
+        response = requests.get(next_page_url, headers=self.headers)
+        page_data.append(response.json()['data'])
+      page_data = list(itertools.chain.from_iterable(page_data))
 
+      json_dict = {
+        'data': page_data
+      }
 
-    # return json_dict['data']
-
-
-    # print deals
-    # print dir(deals[0]).__sizeof__()
+      response_json = self.generate_json_response(json_dict, initial_response, request_body)
+      return json.dumps(response_json)
 
   def make_call(self, url, method_type, payload=None):
 

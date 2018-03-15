@@ -120,11 +120,8 @@ class TestMediaMathLineItem(TestCase):
     li = json.loads(li)
     self.assertIn(li['msg_type'], 'success')
 
-  # def test_get_deals_by_advertiser(self):
-  #   line_item = lineitem.LineItem()
-  #   li = line_item.get_deals_by_advertiser(100429)
-  #   print li
-    # li = json.loads(li)['data']
-    # print len(li)
-    # self.assertIn(li['msg_type'], 'success')
-
+  def test_get_deals_by_advertiser(self):
+    line_item = lineitem.LineItem()
+    li = line_item.get_deals_by_advertiser(100429)
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')
