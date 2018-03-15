@@ -185,7 +185,7 @@ class LineItem:
   def get_deals_by_advertiser(self, advertiser_id):
 
     # make an initial request to pull all deals with advertiser_id perms so we get the initial page/total_count info
-    url = self.generate_url('deals') + "/?permissions.advertiser_id={0}".format(advertiser_id)
+    url = self.generate_url('deals') + "/?permissions.[advertiser_id]={0}".format([advertiser_id])
     initial_response = requests.get(url, headers=self.headers)
     request_body = url, self.headers
     if 'errors' in initial_response.json():
