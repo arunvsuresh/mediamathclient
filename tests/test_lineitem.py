@@ -20,7 +20,6 @@ class TestMediaMathLineItem(TestCase):
     line_item = lineitem.LineItem()
     li = line_item.get_lineitems_by_campaign(243821)
     li = json.loads(li)
-    print len(li['data'])
     self.assertIn(li['msg_type'], 'success')
 
   def test_create_lineitem(self):
@@ -99,7 +98,7 @@ class TestMediaMathLineItem(TestCase):
 
   def test_update_strategy_domain_restrictions(self):
     line_item = lineitem.LineItem()
-    li = line_item.update_strategy_domain_restrictions(1197492, ['youtube.com', 'yahoo.com', 'about.com', 'google.com'])
+    li = line_item.update_strategy_domain_restrictions(1197492, ['youtube.com'])
     li = json.loads(li)
     self.assertIn(li['msg_type'], 'success')
 
@@ -115,12 +114,11 @@ class TestMediaMathLineItem(TestCase):
     li = json.loads(li)
     self.assertIn(li['msg_type'], 'success')
 
-  # def test_get_deals(self):
-  #   line_item = lineitem.LineItem()
-  #   li = line_item.get_valid_deals()
-    # li = json.loads(li)
-    # print len(li['data'])
-    # self.assertIn(li['msg_type'], 'success')
+  def test_get_deals(self):
+    line_item = lineitem.LineItem()
+    li = line_item.get_deals()
+    li = json.loads(li)
+    self.assertIn(li['msg_type'], 'success')
 
   # def test_get_deals_by_advertiser(self):
   #   line_item = lineitem.LineItem()

@@ -2,6 +2,8 @@ import json
 import requests
 import os
 import terminalone
+import itertools
+
 
 
 def get_connection():
@@ -146,37 +148,66 @@ class LineItem:
 
     return self.make_call(url, 'POST', payload)
 
-  def get_valid_deals(self):
+  def get_deals(self):
 
-    deals = self.t1.get_all("deals", full=True, get_all=True, count=True)
-    print deals
-    # url = self.generate_url('deals') + "/?full=*"
-    # return self.make_call(url, 'GET')
+    # deals = self.t1.get_all("deals", full=True, get_all=True, count=True)
+    # print deals
 
-  def get_deals_by_advertiser(self, advertiser_id):
-    # data = {}
-    # data['permissions'] = {
-    #   "advertiser_id": advertiser_id
-    # }
-    data = {
-      'full': '*',
-      'with': {
-                'permissions': {
-                   'advertiser_id': advertiser_id
-                 }
-              }
-    }
+    # make an initial request to pull all deals so we get the intial page/total_count info
+    url = self.generate_url('deals') + "/?full=*"
+    initial_response = requests.get(url, headers=self.headers)
+    request_body = url, self.headers
+    if 'errors' in initial_response.json():
+      response_json = self.generate_json_response(initial_response.json(), initial_response, request_body)
+      return json.dumps(response_json)
 
-    url = self.generate_url('deals')
-    print url
-    # params = self.t1._construct_params("deals", include=data, full=True)
-    # print params
+    else:
 
-    """
-      iterate over each page
-    """
+      """
+          iterate through each page with the step being the page_offset of 100
+      """
+      # get the url for the next page of records to pull from
+      next_page_url = initial_response.json()['meta']['next_page']
+      # get the total count of all deals
+      total_count = initial_response.json()['meta']['total_count']
+      page_data = []
+      # set 100 as the step since you can only have 100 records per page
+      for page_offset in range(0, total_count, 100):
+        response = requests.get(next_page_url, headers=self.headers)
+        page_data.append(response.json()['data'])
+      page_data = list(itertools.chain.from_iterable(page_data))
 
-    response = requests.get(url, headers=self.headers, data=data)
+      json_dict = {
+        'data': page_data
+      }
+
+      response_json = self.generate_json_response(json_dict, initial_response, request_body)
+      return json.dumps(response_json)
+
+  # def get_deals_by_advertiser(self, advertiser_id):
+  #   # data = {}
+  #   # data['permissions'] = {
+  #   #   "advertiser_id": advertiser_id
+  #   # }
+  #   data = {
+  #     'full': '*',
+  #     'with': {
+  #               'permissions': {
+  #                  'advertiser_id': advertiser_id
+  #                }
+  #             }
+  #   }
+  #
+  #   url = self.generate_url('deals')
+  #   print url
+  #   # params = self.t1._construct_params("deals", include=data, full=True)
+  #   # print params
+  #
+  #   """
+  #     iterate over each page
+  #   """
+  #
+  #   response = requests.get(url, headers=self.headers, data=data)
     # content_type = response.headers.get('Content-type')
     #
     #
