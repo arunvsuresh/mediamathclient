@@ -86,7 +86,6 @@ class Creative:
       response_json = self.generate_json_response(json_dict, response, request_body)
       return json.dumps(response_json)
 
-
   def make_creatives_call(self, concept_ids):
     creative_response = []
     json_dict = {}
@@ -99,15 +98,15 @@ class Creative:
       if 'errors' in response.json():
         errors.append(response.json()['errors'][0])
       else:
-        creative_response.append(response.json()['data'])
+        for creative in response.json()['data']:
+          creative_data = self.get_creative_by_id(creative['id'])
+          creative_response.append(json.loads(creative_data)['data'])
 
     # if errors exist within creative calls
     if len(errors) >= 1:
       json_dict['errors'] = errors
 
     else:
-      # flatten multi-dim array
-      creative_response = list(itertools.chain.from_iterable(creative_response))
       json_dict['data'] = creative_response
     return json_dict, response
 

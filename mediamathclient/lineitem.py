@@ -18,6 +18,8 @@ class LineItem:
   headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.mediamath.v1+json',
              'Cookie': 'adama_session=' + str(t1.session_id)}
 
+  page_limit = 100
+
   def generate_url(self, obj_type):
 
     base_url = "https://" + self.t1.api_base + "/"
@@ -161,15 +163,18 @@ class LineItem:
       """
           iterate through each page with the page_offset being a multiple of 100 since page_limit is 100
       """
+
+      # change 100 to var so that if they change page_limit, we just change the var
+
       # calculate last page
-      end = int(round(int(initial_response.json()['meta']['total_count']) / 100))
+      end = int(round(int(initial_response.json()['meta']['total_count']) / self.page_limit))
       page_data = []
       url = self.generate_url('deals') + "/?page_offset=0"
       response = requests.get(url, headers=self.headers)
       page_data.append(response.json()['data'])
       for i in range(0, end):
         # offset is multiple of 100
-        offset = (i + 1) * 100
+        offset = (i + 1) * self.page_limit
         # use offset to get every page
         url = self.generate_url('deals') + "/?page_offset={0}".format(offset)
         response = requests.get(url, headers=self.headers)
@@ -198,14 +203,14 @@ class LineItem:
       """
           iterate through each page with the page_offset being a multiple of 100 since page_limit is 100
       """
-      end = int(round(int(initial_response.json()['meta']['total_count']) / 100)) + 100
+      end = int(round(int(initial_response.json()['meta']['total_count']) / self.page_limit)) + self.page_limit
       page_data = []
       url = self.generate_url('deals') + "/?page_offset=0"
       response = requests.get(url, headers=self.headers)
       page_data.append(response.json()['data'])
       for i in range(0, end):
         # offset is multiple of 100
-        offset = (i + 1) * 100
+        offset = (i + 1) * self.page_limit
         # use offset to get every page
         url = self.generate_url('deals') + "/?page_offset={0}".format(offset)
         response = requests.get(url, headers=self.headers)
