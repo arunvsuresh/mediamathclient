@@ -61,6 +61,10 @@ class Creative:
     url = url + "/" + str(creative_id)
     response = requests.get(url, headers=self.headers)
     json_dict = response.json()
+    if 'width' in json_dict['data'] and 'height' in json_dict['data']:
+      width = json_dict['data']['width']
+      height = json_dict['data']['height']
+      json_dict['data']['size'] = "{0}x{1}".format(width, height)
     request_body = url, self.headers
     response_json = self.generate_json_response(json_dict, response, request_body)
     return json.dumps(response_json)
