@@ -4,8 +4,6 @@ import os
 import terminalone
 import itertools
 
-
-
 def get_connection():
   creds = {
     "username": os.environ['MM_USERNAME'],
@@ -35,7 +33,6 @@ class LineItem:
       constructed_url = self.t1._construct_url("deals", entity=None, child=None, limit=None)[0]
       url = base_url + service_url + constructed_url
       return url
-
 
   def generate_json_response(self, json_dict, response, request_body):
 
@@ -162,16 +159,17 @@ class LineItem:
     else:
 
       """
-          iterate through each page with the step being the page_offset of 100
+          iterate through each page with the page_offset being a multiple of 100 since page_limit is 100
       """
-      # get the url for the next page of records to pull from
-      next_page_url = initial_response.json()['meta']['next_page']
-      # get the total count of all deals
-      total_count = initial_response.json()['meta']['total_count']
+      # calculate last page
+      end = int(round(int(initial_response.json()['meta']['total_count']) / 100))
       page_data = []
-      # set 100 as the step since you can only have 100 records per page
-      for page_offset in range(0, total_count, 100):
-        response = requests.get(next_page_url, headers=self.headers)
+      for i in range(0, end):
+        # offset is multiple of 100
+        offset = (i + 1) * 100
+        # use offset to get every page
+        url = self.generate_url('deals') + "/?page_offset={0}".format(offset)
+        response = requests.get(url, headers=self.headers)
         page_data.append(response.json()['data'])
       page_data = list(itertools.chain.from_iterable(page_data))
 
@@ -187,6 +185,8 @@ class LineItem:
     # make an initial request to pull all deals with advertiser_id perms so we get the initial page/total_count info
     url = self.generate_url('deals') + "/?permissions.[advertiser_id]={0}".format([advertiser_id])
     initial_response = requests.get(url, headers=self.headers)
+    # print initial_response.json()["meta"]
+    # return
     request_body = url, self.headers
     if 'errors' in initial_response.json():
       response_json = self.generate_json_response(initial_response.json(), initial_response, request_body)
@@ -195,17 +195,16 @@ class LineItem:
     else:
 
       """
-          iterate through each page with the step being the page_offset of 100
+          iterate through each page with the page_offset being a multiple of 100 since page_limit is 100
       """
-      # get the url for the next page of records to pull from
-      next_page_url = initial_response.json()['meta']['next_page']
-      # get the total count of all deals
-      total_count = initial_response.json()['meta']['total_count']
-
+      end = int(round(int(initial_response.json()['meta']['total_count']) / 100))
       page_data = []
-      # set 100 as the step since you can only have 100 records per page
-      for page_offset in range(0, total_count, 100):
-        response = requests.get(next_page_url, headers=self.headers)
+      for i in range(0, end):
+        # offset is multiple of 100
+        offset = (i + 1) * 100
+        # use offset to get every page
+        url = self.generate_url('deals') + "/?page_offset={0}".format(offset)
+        response = requests.get(url, headers=self.headers)
         page_data.append(response.json()['data'])
       page_data = list(itertools.chain.from_iterable(page_data))
 
