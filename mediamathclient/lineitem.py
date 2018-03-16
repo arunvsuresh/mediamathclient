@@ -164,6 +164,9 @@ class LineItem:
       # calculate last page
       end = int(round(int(initial_response.json()['meta']['total_count']) / 100))
       page_data = []
+      url = self.generate_url('deals') + "/?page_offset=0"
+      response = requests.get(url, headers=self.headers)
+      page_data.append(response.json()['data'])
       for i in range(0, end):
         # offset is multiple of 100
         offset = (i + 1) * 100
@@ -185,8 +188,6 @@ class LineItem:
     # make an initial request to pull all deals with advertiser_id perms so we get the initial page/total_count info
     url = self.generate_url('deals') + "/?permissions.[advertiser_id]={0}".format([advertiser_id])
     initial_response = requests.get(url, headers=self.headers)
-    # print initial_response.json()["meta"]
-    # return
     request_body = url, self.headers
     if 'errors' in initial_response.json():
       response_json = self.generate_json_response(initial_response.json(), initial_response, request_body)
@@ -197,8 +198,11 @@ class LineItem:
       """
           iterate through each page with the page_offset being a multiple of 100 since page_limit is 100
       """
-      end = int(round(int(initial_response.json()['meta']['total_count']) / 100))
+      end = int(round(int(initial_response.json()['meta']['total_count']) / 100)) + 100
       page_data = []
+      url = self.generate_url('deals') + "/?page_offset=0"
+      response = requests.get(url, headers=self.headers)
+      page_data.append(response.json()['data'])
       for i in range(0, end):
         # offset is multiple of 100
         offset = (i + 1) * 100
