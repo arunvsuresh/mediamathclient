@@ -58,7 +58,7 @@ class Creative:
 
   def get_creative_by_id(self, creative_id):
     url = self.generate_url("atomic_creatives")
-    url = url + "/" + str(creative_id)
+    url = url + "/" + str(creative_id) + "/?full=*"
     response = requests.get(url, headers=self.headers)
     json_dict = response.json()
     if 'width' in json_dict['data'] and 'height' in json_dict['data']:
@@ -70,7 +70,7 @@ class Creative:
     return json.dumps(response_json)
 
   def get_creatives_by_lineitem(self, lineitem_id):
-    strategy_url = self.generate_url("strategies") + "/" + str(lineitem_id) + "/concepts"
+    strategy_url = self.generate_url("strategies") + "/" + str(lineitem_id) + "/concepts" + "/?full=*"
     response = requests.get(strategy_url, headers=self.headers)
     request_body = strategy_url, self.headers
     json_dict = response.json()
