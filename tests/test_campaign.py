@@ -14,7 +14,6 @@ class TestMediaMathCampaign(TestCase):
     c = campaign.Campaign()
     campaigns = c.get_campaigns_by_advertiser(100429)
     c = json.loads(campaigns)
-    print c
     self.assertIn(c['msg_type'], 'success')
 
   def test_get_campaign_by_id(self):
@@ -29,12 +28,12 @@ class TestMediaMathCampaign(TestCase):
     data = {
       'advertiser_id': 162259,
       'ad_server_id': 9,
-      'end_date': '2018-03-18T09:00:00',
+      'end_date': '2018-03-22T09:00:00',
       'goal_type': 'spend',
       'goal_value': '0.0001',
-      'name': 'arun test campaign 03/06',
+      'name': 'arun test campaign 03/19',
       'service_type': 'SELF',
-      'start_date': '2018-03-16T23:59:00',
+      'start_date': '2018-03-20T23:59:00',
       'total_budget': 2
     }
     new_campaign = c.create_campaign(data)
@@ -85,7 +84,6 @@ class TestMediaMathCampaign(TestCase):
     # del old_campaign['data']['total_budget']
     # del old_campaign['data']['status']
     # del old_campaign['data']['use_default_ad_server']
-    # print 'OLD CAMPAIGN: ', old_campaign['data']
 
 
 
