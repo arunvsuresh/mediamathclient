@@ -28,12 +28,7 @@ class Campaign:
     self.data = data
     self.omg_campaign = omg_campaign
 
-  def generate_json_response(self, json_dict, response, request_body):
-    response_json = {
-      "response_code": response.status_code,
-      "request_body": request_body
-    }
-
+  def error_check_json_response(self, response_json, json_dict):
     # error checking
     if 'errors' in json_dict:
       response_json['msg_type'] = 'error'
@@ -45,6 +40,15 @@ class Campaign:
       response_json['msg_type'] = 'success'
       response_json['msg'] = ''
 
+    return response_json
+
+  def generate_json_response(self, json_dict, response, request_body):
+    response_json = {
+      "response_code": response.status_code,
+      "request_body": request_body
+    }
+
+    response_json = self.error_check_json_response(response_json, json_dict)
     return response_json
 
   def generate_url(self):
