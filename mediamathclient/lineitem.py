@@ -164,8 +164,6 @@ class LineItem:
           iterate through each page with the page_offset being a multiple of 100 since page_limit is 100
       """
 
-      # change 100 to var so that if they change page_limit, we just change the var
-
       # calculate last page
       end = int(round(int(initial_response.json()['meta']['total_count']) / self.page_limit))
       page_data = []
@@ -173,8 +171,11 @@ class LineItem:
       response = requests.get(url, headers=self.headers)
       page_data.append(response.json()['data'])
       for i in range(0, end):
-        # offset is multiple of 100
-        offset = (i + 1) * self.page_limit
+        if i == 0:
+            offset = 0
+        else:
+            # offset is multiple of 100
+            offset = (i + 1) * self.page_limit
         # use offset to get every page
         url = self.generate_url('deals') + "/?page_offset={0}".format(offset)
         response = requests.get(url, headers=self.headers)
