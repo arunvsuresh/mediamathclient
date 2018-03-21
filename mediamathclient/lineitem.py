@@ -167,21 +167,14 @@ class LineItem:
       # calculate last page
       end = int(round(int(initial_response.json()['meta']['total_count']) / self.page_limit))
       page_data = []
-      url = self.generate_url('deals') + "/?page_offset=0"
-      response = requests.get(url, headers=self.headers)
-      page_data.append(response.json()['data'])
-      for i in range(0, end):
-        if i == 0:
-            offset = 0
-        else:
-            # offset is multiple of 100
-            offset = (i + 1) * self.page_limit
+      for i in range(-1, end):
+        # offset is multiple of 100
+        offset = (i + 1) * self.page_limit
         # use offset to get every page
         url = self.generate_url('deals') + "/?page_offset={0}".format(offset)
         response = requests.get(url, headers=self.headers)
         page_data.append(response.json()['data'])
       page_data = list(itertools.chain.from_iterable(page_data))
-
       json_dict = {
         'data': page_data
       }
