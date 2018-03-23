@@ -6,13 +6,13 @@ import json
 class TestMediaMathcreative(TestCase):
 
   def test_connection(self):
-    c = creative.get_connection()
-    session_id = c.session_id
+    c = creative.Creative()
+    session_id = c.t1.session_id
     self.assertIsNotNone(session_id)
 
   def test_get_creative_by_id(self):
     c = creative.Creative()
-    c = c.get_creative_by_id(110640)
+    c = c.get_by_id(110640)
     c = json.loads(c)
     self.assertIn(c['msg_type'], 'success')
 
