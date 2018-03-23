@@ -31,9 +31,9 @@ class TestMediaMathCampaign(TestCase):
           'end_date': '2018-03-26T09:00:00',
           'goal_type': 'spend',
           'goal_value': '0.0001',
-          'name': 'arun test campaign 03/22',
+          'name': 'arun test campaign 03/23',
           'service_type': 'SELF',
-          'start_date': '2018-03-22T23:59:00',
+          'start_date': '2018-03-23T23:59:00',
           'total_budget': 2
         }
         new_campaign = c.create(data)

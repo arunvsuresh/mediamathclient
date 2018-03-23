@@ -28,7 +28,7 @@ class TestMediaMathLineItem(TestCase):
     data = {
       'campaign_id': 243821,
       'name': 'arun test line item 03/22/2018',
-      'start_date': '2018-03-22T23:59:00+0000',
+      'start_date': '2018-03-24T23:59:00+0000',
       'end_date': '2018-03-26T09:00:00+0000',
       'budget': 2,
       'pacing_amount': 0.01,
@@ -73,16 +73,16 @@ class TestMediaMathLineItem(TestCase):
   #   data = {
   #     'campaign_id': 243821,
   #     'name': 'arun\'s test line item 03/22/18',
-  #     'budget': 2,
-  #     'pacing_amount': 0.01,
-  #     'goal_type': 'spend',
-  #     'use_optimization': 0,
-  #     'type': 'GBO',
+  #     # 'budget': 2,
+  #     # 'pacing_amount': 0.01,
+  #     # 'goal_type': 'spend',
+  #     # 'use_optimization': 0,
+  #     # 'type': 'GBO',
   #   }
   #
   #   updated_lineitem = line_item.update(data, 1188752)
   #   updated_lineitem = json.loads(updated_lineitem)
-    # self.assertIn(updated_lineitem['data']['name'], 'arun\'s test line item 03/22/18')
+  #   self.assertIn(updated_lineitem['data']['name'], 'arun\'s test line item 03/22/18')
 
   def test_assign_sitelist_to_strategy(self):
     line_item = lineitem.LineItem()

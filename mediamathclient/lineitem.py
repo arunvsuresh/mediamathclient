@@ -9,47 +9,6 @@ class LineItem(Base):
 
   obj_name = "strategies"
 
-  # def generate_url(self, obj_type):
-  #
-  #   base_url = "https://" + self.t1.api_base + "/"
-  #
-  #   if obj_type == "strategies":
-  #     service_url = self.t1._get_service_path('strategies') + "/"
-  #     constructed_url = self.t1._construct_url("strategies", entity=None, child=None, limit=None)[0]
-  #     url = base_url + service_url + constructed_url
-  #     return url
-  #
-  #   elif obj_type == "deals":
-  #     service_url = self.t1._get_service_path('deals') + "/"
-  #     constructed_url = self.t1._construct_url("deals", entity=None, child=None, limit=None)[0]
-  #     url = base_url + service_url + constructed_url
-  #     return url
-
-  # def generate_json_response(self, json_dict, response, request_body):
-  #
-  #   response_json = {
-  #     "response_code": response.status_code,
-  #     "request_body": request_body
-  #   }
-  #
-  #   # error checking
-  #   if 'errors' in json_dict:
-  #     response_json['msg_type'] = 'error'
-  #     response_json['msg'] = json_dict['errors']
-  #     response_json['data'] = json_dict['errors']
-  #
-  #   elif 'data' not in json_dict:
-  #     response_json['data'] = json_dict
-  #     response_json['msg_type'] = 'success'
-  #     response_json['msg'] = ''
-  #
-  #   else:
-  #     response_json['data'] = json_dict['data']
-  #     response_json['msg_type'] = 'success'
-  #     response_json['msg'] = ''
-  #
-  #   return response_json
-
   def get_lineitems_by_campaign(self, campaign_id):
     campaign_id = int(campaign_id)
     url = self.generate_url() + "/limit/campaign={0}".format(str(campaign_id))
@@ -143,9 +102,9 @@ class LineItem(Base):
       # calculate last page
       end = int(round(int(initial_response.json()['meta']['total_count']) / self.page_limit))
       page_data = []
-      for i in range(-1, end):
+      for i in range(0, end + 1):
         # offset is multiple of 100
-        offset = (i + 1) * self.page_limit
+        offset = i * self.page_limit
         # use offset to get every page
         url = self.generate_url('deals') + "/?page_offset={0}".format(offset)
         response = requests.get(url, headers=self.headers)
