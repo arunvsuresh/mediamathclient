@@ -17,7 +17,7 @@ class SupplySource:
   t1 = get_connection()
   headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.mediamath.v1+json',
              'Cookie': 'adama_session=' + str(t1.session_id)}
-
+  page_limit = 100
   def generate_url(self, obj_type):
 
     base_url = "https://" + self.t1.api_base + "/"
@@ -55,7 +55,26 @@ class SupplySource:
 
   def get_supply_sources(self):
     url = self.generate_url("supply_sources")
-    return self.make_call(url, 'GET')
+    initial_response = requests.get(url, headers=self.headers)
+    request_body = url, self.headers
+    # calculate last page
+    end = int(round(int(initial_response.json()['meta']['total_count']) / self.page_limit))
+    page_data = []
+    for i in range(-1, end):
+      # offset is multiple of 100
+      offset = (i + 1) * self.page_limit
+      # use offset to get every page
+      url = self.generate_url('supply_sources') + "/?page_offset={0}".format(offset)
+      response = requests.get(url, headers=self.headers)
+      page_data.append(response.json()['data'])
+    page_data = list(itertools.chain.from_iterable(page_data))
+
+    json_dict = {
+      'data': page_data
+    }
+
+    response_json = self.generate_json_response(json_dict, initial_response, request_body)
+    return json.dumps(response_json)
 
   def make_call(self, url, method_type, payload=None):
 
