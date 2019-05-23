@@ -8,9 +8,9 @@ import datetime
 # connect to t1
 def get_connection():
     creds = {
-        "username": os.environ['MM_USERNAME'],
-        "password": os.environ['MM_PASSWORD'],
-        "api_key": os.environ['MM_API_KEY']
+        "username": self.username,
+        "password": self.password,
+        "api_key": self.api_key
     }
     return terminalone.T1(auth_method="cookie", **creds)
 
@@ -24,8 +24,10 @@ class Campaign:
     headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.mediamath.v1+json',
                'Cookie': 'adama_session=' + str(t1.session_id)}
 
-    def __init__(self, data=None, omg_campaign=None):
-
+    def __init__(self, api_key, username, password, data=None, omg_campaign=None):
+        self.api_key = api_key
+        self.username = username
+        self.password = password
         self.data = data
         self.omg_campaign = omg_campaign
 

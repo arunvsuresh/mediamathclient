@@ -7,9 +7,9 @@ import itertools
 
 def get_connection():
     creds = {
-        "username": os.environ['MM_USERNAME'],
-        "password": os.environ['MM_PASSWORD'],
-        "api_key": os.environ['MM_API_KEY']
+        "username": self.username,
+        "password": self.password,
+        "api_key": self.api_key
     }
     return terminalone.T1(auth_method="cookie", **creds)
 
@@ -20,6 +20,11 @@ class LineItem:
                'Cookie': 'adama_session=' + str(t1.session_id)}
 
     page_limit = 100
+
+    def __init__(self, api_key, username, password):
+        self.api_key = api_key
+        self.username = username
+        self.password = password
 
     def generate_url(self, obj_type):
 
