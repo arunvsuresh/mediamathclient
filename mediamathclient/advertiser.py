@@ -56,8 +56,7 @@ class Advertiser:
         return url
 
     def get_all(self):
-        advertiser_id = int(advertiser_id)
-        url = self.generate_url() + "/" + str(advertiser_id)
+        url = self.generate_url()
         return self.call_mm_api('GET', url)
 
     def call_mm_api(self, obj_type, url, data=None):
